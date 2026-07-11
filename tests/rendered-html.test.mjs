@@ -54,7 +54,11 @@ test("keeps the captured business content and key assets", async () => {
   assert.match(inventory, /Industries served/);
   assert.match(inventory, /NAS GLOBAL \(Pty\) Ltd/);
   assert.match(inventory, /LinkedIn/);
-  assert.equal((page.match(/className="service-card"/g) ?? []).length, 1);
+  assert.equal((page.match(/className="reference-service-card"/g) ?? []).length, 1);
+  assert.match(page, /reference-topbar/);
+  assert.match(page, /reference-hero/);
+  assert.match(page, /focus-grid/);
+  assert.match(page, /reference-process/);
   assert.match(page, /services\.map/);
   assert.match(page, /industries\.map/);
   assert.match(layout, /generateMetadata/);
