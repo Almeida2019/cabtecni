@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url: origin,
       title: "Cabtecni | Engineering & Procurement Solutions",
       description: "Engineering procurement, logistics and industrial services for Angola and beyond.",
-      images: [{ url: `${origin}/og.png`, width: 1659, height: 948, alt: "Cabtecni Engineering & Procurement Solutions" }],
+      images: [{ url: `${origin}/og.png`, width: 1693, height: 929, alt: "Cabtecni Engineering & Procurement Solutions" }],
     },
     twitter: {
       card: "summary_large_image",

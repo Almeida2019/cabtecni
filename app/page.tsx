@@ -61,25 +61,25 @@ const services = [
 
 const focusAreas = [
   {
-    icon: "⌁",
+    icon: "01",
     title: "Equipment & Materials",
     description:
       "Supply and support in the management of equipment and materials for technical operations.",
   },
   {
-    icon: "⚙",
+    icon: "02",
     title: "Specialised Engineering",
     description:
       "Technical know-how applied to industrial, energy and operational projects.",
   },
   {
-    icon: "▥",
+    icon: "03",
     title: "Industrial Operations",
     description:
       "Support for industrial work requiring careful planning, coordination and control.",
   },
   {
-    icon: "◇",
+    icon: "04",
     title: "Commitment to Safety",
     description:
       "Responsible execution focused on prevention, quality and dependable delivery.",
@@ -88,21 +88,21 @@ const focusAreas = [
 
 const processSteps = [
   {
-    icon: "▧",
+    icon: "DISCOVER",
     number: "01",
     title: "Requirement analysis",
     description:
       "We evaluate the scope, technical requirements, destination and objectives to define the right approach.",
   },
   {
-    icon: "⚗",
+    icon: "PLAN",
     number: "02",
     title: "Technical planning",
     description:
       "We structure the suppliers, people, materials, equipment, timing and transport needed for execution.",
   },
   {
-    icon: "⚙",
+    icon: "DELIVER",
     number: "03",
     title: "Delivery & follow-through",
     description:
@@ -191,10 +191,8 @@ export default function Home() {
               <a className="active" href="#top">Home</a>
               <a href="#about">About Us <b aria-hidden="true">⌄</b></a>
               <a href="#services">Services</a>
-              <a href="#process">Our Process</a>
-              <a href="#projects">Projects</a>
               <a href="#capabilities">Capabilities</a>
-              <a href="#industries">Industries <b aria-hidden="true">⌄</b></a>
+              <a href="#industries">Industries</a>
               <a href="#contact">Contacts</a>
               <a className="search-icon" href="#services" aria-label="Explore services">⌕</a>
             </div>
@@ -219,7 +217,8 @@ export default function Home() {
           <div className="slide-shade" />
           <div className="site-shell slide-inner">
             <div className="slide-copy">
-              <h1>Engineering &amp; Procurement Solutions</h1>
+              <p className="hero-kicker">Engineering &amp; Procurement Solutions</p>
+              <h1>Built for industry.<br />Connected to the world.</h1>
               <p>
                 Reliable sourcing, industrial services and logistics support
                 for clients in Angola and beyond.
@@ -232,7 +231,8 @@ export default function Home() {
           <div className="slide-shade" />
           <div className="site-shell slide-inner">
             <div className="slide-copy">
-              <h2>Logistics &amp; Industrial Procurement</h2>
+              <p className="hero-kicker">Global sourcing. Local execution.</p>
+              <h2>Procurement<br />without borders.</h2>
               <p>
                 We coordinate supply chains, equipment and materials to support
                 efficient, continuous operations.
@@ -245,7 +245,8 @@ export default function Home() {
           <div className="slide-shade" />
           <div className="site-shell slide-inner">
             <div className="slide-copy">
-              <h2>Technical Services for Industry</h2>
+              <p className="hero-kicker">Technical capability. Dependable delivery.</p>
+              <h2>Engineering<br />with purpose.</h2>
               <p>
                 Practical engineering support shaped around demanding projects,
                 schedules and operating environments.
@@ -272,7 +273,7 @@ export default function Home() {
               Incoterms knowledge and multiple transport models.
             </p>
             <div className="commitment-panel">
-              <span className="commitment-symbol" aria-hidden="true">▥</span>
+              <span className="commitment-symbol" aria-hidden="true">100%</span>
               <div>
                 <h3>CABTECNI — <strong>INSTITUTIONAL COMMITMENT</strong></h3>
                 <p>
@@ -303,8 +304,9 @@ export default function Home() {
             <span />
           </div>
           <div className="service-card-grid">
-            {services.slice(0, 6).map((service) => (
+            {services.map((service, index) => (
               <article key={service.title}>
+                <span className="service-number">{String(index + 1).padStart(2, "0")}</span>
                 <h3>{service.title}</h3>
                 <p>{service.description}</p>
                 <span className="card-accent" aria-hidden="true" />
@@ -364,7 +366,7 @@ export default function Home() {
             <span />
           </div>
           <div className="project-grid">
-            {services.map((service) => (
+            {services.slice(0, 4).map((service) => (
               <article key={service.title}>
                 <div className="project-image">
                   <img src={service.image} alt="" loading="lazy" />

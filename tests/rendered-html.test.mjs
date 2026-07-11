@@ -59,7 +59,7 @@ test("keeps the captured business content and key assets", async () => {
   assert.match(page, /hero-carousel/);
   assert.match(page, /focus-grid/);
   assert.match(page, /process-timeline/);
-  assert.match(page, /services\.slice\(0, 6\)\.map/);
+  assert.match(page, /services\.map/);
   assert.match(page, /services\.map/);
   assert.match(page, /industries\.map/);
   assert.match(layout, /generateMetadata/);
