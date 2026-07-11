@@ -30,7 +30,7 @@ test("server-renders the complete Cabtecni website", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>Cabtecni \| Engineering &amp; Procurement Solutions<\/title>/i);
-  assert.match(html, /Industrial support/);
+  assert.match(html, /Engineering procurement/);
   assert.match(html, /100% Angolan owned/);
   assert.match(html, /Procurement Services/);
   assert.match(html, /Piping Manufacturing/);
@@ -54,11 +54,12 @@ test("keeps the captured business content and key assets", async () => {
   assert.match(inventory, /Industries served/);
   assert.match(inventory, /NAS GLOBAL \(Pty\) Ltd/);
   assert.match(inventory, /LinkedIn/);
-  assert.equal((page.match(/className="reference-service-card"/g) ?? []).length, 1);
-  assert.match(page, /reference-topbar/);
-  assert.match(page, /reference-hero/);
+  assert.equal((page.match(/className="carousel-slide/g) ?? []).length, 3);
+  assert.match(page, /topbar/);
+  assert.match(page, /hero-carousel/);
   assert.match(page, /focus-grid/);
-  assert.match(page, /reference-process/);
+  assert.match(page, /process-timeline/);
+  assert.match(page, /services\.slice\(0, 6\)\.map/);
   assert.match(page, /services\.map/);
   assert.match(page, /industries\.map/);
   assert.match(layout, /generateMetadata/);

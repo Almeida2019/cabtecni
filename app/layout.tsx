@@ -22,13 +22,13 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       url: origin,
       title: "Cabtecni | Engineering & Procurement Solutions",
-      description: "Industrial support. Delivered with confidence.",
-      images: [{ url: `${origin}/og.png`, width: 1731, height: 909, alt: "Cabtecni Engineering & Procurement Solutions" }],
+      description: "Engineering procurement, logistics and industrial services for Angola and beyond.",
+      images: [{ url: `${origin}/og.png`, width: 1659, height: 948, alt: "Cabtecni Engineering & Procurement Solutions" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "Cabtecni | Engineering & Procurement Solutions",
-      description: "Industrial support. Delivered with confidence.",
+      description: "Engineering procurement, logistics and industrial services for Angola and beyond.",
       images: [`${origin}/og.png`],
     },
   };
