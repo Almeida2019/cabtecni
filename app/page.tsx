@@ -184,28 +184,27 @@ export default function Home() {
 
         <nav className="main-navigation" aria-label="Primary navigation">
           <div className="site-shell navigation-inner">
-            <a className="site-logo" href="#top" aria-label="Cabtecni home">
+            <a className="site-logo" href="/" aria-label="Cabtecni home">
               <img src="/images/cabtecni/cropped-Artboard-1.png" alt="Cabtecni" />
             </a>
             <div className="desktop-menu">
-              <a className="active" href="#top">Home</a>
-              <a href="#about">About Us <b aria-hidden="true">⌄</b></a>
-              <a href="#services">Services</a>
-              <a href="#capabilities">Capabilities</a>
-              <a href="#industries">Industries</a>
-              <a href="#contact">Contacts</a>
-              <a className="search-icon" href="#services" aria-label="Explore services">⌕</a>
+              <a className="active" href="/">Home</a>
+              <a href="/about">About Us</a>
+              <a href="/services">Services</a>
+              <a href="/capabilities">Capabilities</a>
+              <a href="/industries">Industries</a>
+              <a href="/contact">Contacts</a>
+              <a className="search-icon" href="/services" aria-label="Explore services">⌕</a>
             </div>
             <details className="mobile-menu">
               <summary aria-label="Open navigation">☰</summary>
               <div>
-                <a href="#top">Home</a>
-                <a href="#about">About Us</a>
-                <a href="#services">Services</a>
-                <a href="#process">Our Process</a>
-                <a href="#projects">Projects</a>
-                <a href="#capabilities">Capabilities</a>
-                <a href="#contact">Contacts</a>
+                <a href="/">Home</a>
+                <a href="/about">About Us</a>
+                <a href="/services">Services</a>
+                <a href="/capabilities">Capabilities</a>
+                <a href="/industries">Industries</a>
+                <a href="/contact">Contacts</a>
               </div>
             </details>
           </div>
@@ -223,7 +222,7 @@ export default function Home() {
                 Reliable sourcing, industrial services and logistics support
                 for clients in Angola and beyond.
               </p>
-              <a className="outline-button" href="#services">Our services <span>→</span></a>
+              <a className="outline-button" href="/services">Our services <span>→</span></a>
             </div>
           </div>
         </article>
@@ -237,7 +236,7 @@ export default function Home() {
                 We coordinate supply chains, equipment and materials to support
                 efficient, continuous operations.
               </p>
-              <a className="outline-button" href="#services">Our services <span>→</span></a>
+              <a className="outline-button" href="/services">Our services <span>→</span></a>
             </div>
           </div>
         </article>
@@ -251,7 +250,7 @@ export default function Home() {
                 Practical engineering support shaped around demanding projects,
                 schedules and operating environments.
               </p>
-              <a className="outline-button" href="#contact">Talk to us <span>→</span></a>
+              <a className="outline-button" href="/contact">Talk to us <span>→</span></a>
             </div>
           </div>
         </article>
@@ -313,7 +312,7 @@ export default function Home() {
               </article>
             ))}
           </div>
-          <a className="accent-button" href="#projects">Service portfolio <span>→</span></a>
+          <a className="accent-button" href="/services">Service portfolio <span>→</span></a>
         </div>
       </section>
 
@@ -370,7 +369,7 @@ export default function Home() {
               <article key={service.title}>
                 <div className="project-image">
                   <img src={service.image} alt="" loading="lazy" />
-                  <div><a href="#contact" aria-label={`Enquire about ${service.title}`}>↗</a></div>
+                  <div><a href="/contact" aria-label={`Enquire about ${service.title}`}>↗</a></div>
                 </div>
                 <h3>{service.title}</h3>
               </article>
@@ -393,7 +392,7 @@ export default function Home() {
             with a focus on planning, logistics, equipment supply, specialised
             services and dependable execution.
           </p>
-          <a className="outline-button" href="#services">View services</a>
+          <a className="outline-button" href="/services">View services</a>
         </div>
       </section>
 
@@ -405,7 +404,7 @@ export default function Home() {
               <div>
                 <h3>{feature.title}</h3>
                 <p>{feature.text}</p>
-                <a href="#contact">Learn more <span>→</span></a>
+                <a href="/contact">Learn more <span>→</span></a>
               </div>
             </article>
           ))}
@@ -454,11 +453,11 @@ export default function Home() {
           </div>
           <div>
             <h3>Services</h3>
-            <a href="#services">Procurement Services</a>
-            <a href="#services">Logistics</a>
-            <a href="#services">Equipment Rental</a>
-            <a href="#services">Labour Supply</a>
-            <a href="#services">Technical Services</a>
+            <a href="/services">Procurement Services</a>
+            <a href="/services">Logistics</a>
+            <a href="/services">Equipment Rental</a>
+            <a href="/services">Labour Supply</a>
+            <a href="/services">Technical Services</a>
           </div>
           <div>
             <h3>Contacts / Email</h3>

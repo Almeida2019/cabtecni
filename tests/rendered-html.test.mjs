@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render() {
+async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request("https://cabtecni.example/", {
+    new Request(`https://cabtecni.example${pathname}`, {
       headers: { accept: "text/html", host: "cabtecni.example" },
     }),
     {
@@ -38,6 +38,23 @@ test("server-renders the complete Cabtecni website", async () => {
   assert.match(html, /\+244 935 62 51 51/);
   assert.match(html, /https:\/\/cabtecni\.example\/og\.png/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
+});
+
+test("renders a dedicated page for every main menu item", async () => {
+  const routes = [
+    ["/about", /Angolan roots/],
+    ["/services", /Integrated support/],
+    ["/capabilities", /network and discipline/],
+    ["/industries", /critical sectors/],
+    ["/contact", /Bring us your next requirement/],
+  ];
+
+  for (const [pathname, expected] of routes) {
+    const response = await render(pathname);
+    assert.equal(response.status, 200, pathname);
+    const html = await response.text();
+    assert.match(html, expected);
+  }
 });
 
 test("keeps the captured business content and key assets", async () => {
