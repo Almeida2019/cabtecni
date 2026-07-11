@@ -257,6 +257,13 @@ export default function Home() {
         <div className="carousel-arrows" aria-hidden="true"><span>‹</span><span>›</span></div>
       </section>
 
+      <section className="brand-teamwork-band" aria-label="Cabtecni teamwork">
+        <div className="site-shell">
+          <p>Teamwork that keeps complex projects moving.</p>
+          <span>Cabtecni · Engineering &amp; Procurement Solutions</span>
+        </div>
+      </section>
+
       <section className="about-section" id="about">
         <div className="site-shell about-grid">
           <div className="about-copy">

@@ -14,9 +14,9 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       "Angolan-owned engineering procurement, logistics and industrial services for oil and gas, mining, power, construction and more.",
     icons: {
-      icon: "/images/cabtecni/Artboard-22.png",
-      shortcut: "/images/cabtecni/Artboard-22.png",
-      apple: "/images/cabtecni/Artboard-22.png",
+      icon: "/brand/logos/apple-touch-icon.png",
+      shortcut: "/brand/logos/apple-touch-icon.png",
+      apple: "/brand/logos/apple-touch-icon.png",
     },
     openGraph: {
       type: "website",
