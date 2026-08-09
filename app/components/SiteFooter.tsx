@@ -1,36 +1,83 @@
-export function SiteFooter() {
+import Link from "next/link";
+import { getDictionary } from "../i18n";
+import { localePath, type Locale } from "../i18n/config";
+import { navItems } from "../navigation";
+import { SITE } from "../site-config";
+
+/** Renders "a\nb" as two lines without dangerouslySetInnerHTML. */
+function MultiLine({ value }: { value: string }) {
+  const lines = value.split("\n");
+  return (
+    <>
+      {lines.map((line, i) => (
+        <span key={line}>
+          {line}
+          {i < lines.length - 1 ? <br /> : null}
+        </span>
+      ))}
+    </>
+  );
+}
+
+export function SiteFooter({ locale }: { locale: Locale }) {
+  const t = getDictionary(locale);
+  const items = navItems(t);
+  const companyLinks = items.filter((i) => i.key !== "home" && i.key !== "services");
+
   return (
     <footer className="site-footer">
       <div className="site-shell footer-grid">
         <div className="footer-about">
-          <a href="/"><img src="/images/cabtecni/cropped-Artboard-1.png" alt="Cabtecni" /></a>
-          <p>CABTECNI provides engineering procurement, logistics and industrial services with a focus on quality, efficiency and customer satisfaction.</p>
-          <span>Oil &amp; Gas • Mining • Logistics • Industry</span>
+          {/* White artwork, so it sits directly on the dark footer without the
+              white plate the old colour logo needed. */}
+          <Link href={localePath(locale, "/")} aria-label={t.nav.homeAria}>
+            <img src="/brand/logos/cabtecni-white.png" alt="Cabtecni" width={230} height={95} />
+          </Link>
+          <p>{t.footer.about}</p>
+          <span>{t.footer.sectors}</span>
         </div>
         <div>
-          <h3>Company</h3>
-          <a href="/about">About Us</a>
-          <a href="/capabilities">Capabilities</a>
-          <a href="/industries">Industries</a>
-          <a href="/contact">Contact</a>
+          <h3>{t.footer.company}</h3>
+          {companyLinks.map((item) => (
+            <Link key={item.key} href={localePath(locale, item.path)}>{item.label}</Link>
+          ))}
         </div>
         <div>
-          <h3>Services</h3>
-          <a href="/services">Procurement Services</a>
-          <a href="/services">Logistics</a>
-          <a href="/services">Equipment Rental</a>
-          <a href="/services">Technical Services</a>
+          <h3>{t.footer.services}</h3>
+          {t.footer.footerServices.map((label) => (
+            <Link key={label} href={localePath(locale, "/services")}>{label}</Link>
+          ))}
         </div>
         <div>
-          <h3>Contact</h3>
-          <p><i>✉</i> Email<br /><a href="mailto:sales@cabtecni.com">sales@cabtecni.com</a></p>
-          <p><i>◆</i> Telephone<br /><a href="tel:+244935625151">+244 935 62 51 51</a></p>
-          <a className="footer-linkedin" href="https://www.linkedin.com/company/cabtecni/" target="_blank" rel="noreferrer">LinkedIn ↗</a>
+          <h3>{t.footer.contact}</h3>
+          <p>
+            <i aria-hidden="true">✉</i> {t.footer.email}<br />
+            <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+          </p>
+          <p>
+            <i aria-hidden="true">◆</i> {t.footer.telephone}<br />
+            <a href={`tel:${SITE.telephone}`}>{SITE.telephoneDisplay}</a>
+          </p>
+          <p><i aria-hidden="true">◷</i> {t.footer.hours}<br />{t.footer.hoursValue}</p>
+        </div>
+        <div>
+          <h3>{t.footer.location}</h3>
+          <p><MultiLine value={t.footer.address} /></p>
+          <a className="footer-linkedin" href={SITE.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
         </div>
       </div>
+
+      <div className="site-shell footer-partner">
+        <p>{t.footer.partnerLabel}</p>
+        <a href={`mailto:${SITE.partnerEmail}`} aria-label={t.footer.partnerAria}>
+          <img src="/brand/logos/nas-global-colour.png" alt="NAS GLOBAL (Pty) Ltd" width={208} height={107} />
+        </a>
+        <span>{t.footer.partnerNote}</span>
+      </div>
+
       <div className="site-shell footer-bottom">
-        <span>© {new Date().getFullYear()} CABTECNI, Lda. All rights reserved.</span>
-        <span>Engineering &amp; Procurement Solutions</span>
+        <span>© {new Date().getFullYear()} {SITE.name}. {t.footer.rights}</span>
+        <span>{SITE.tagline}</span>
       </div>
     </footer>
   );

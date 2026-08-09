@@ -30,5 +30,6 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "db", "worker", "build", "vite.config.ts"]
+  "//": "Bare directory names did not match, so these globs are explicit. `examples/**` matters because examples/d1 imports db/, which drags the excluded D1 scaffolding back into the program and fails the typecheck.",
+  "exclude": ["node_modules", "db/**", "worker/**", "build/**", "examples/**", "vite.config.ts"]
 }

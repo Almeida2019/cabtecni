@@ -30,13 +30,21 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.local.example
 
 # vercel
 .vercel
 
 # typescript
 next-env.d.ts
+tsconfig.tsbuildinfo
 /dist/
 /.wrangler/
 /outputs/
 /work/
+
+# Client voice notes, transcripts and photos from António.
+# THIS REPOSITORY IS PUBLIC. These are recordings of a named private
+# individual, and git history is effectively permanent, so they stay local.
+# The extracted action points are summarised in HANDOFF.md instead.
+/Latest_from_Antonio/

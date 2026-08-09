@@ -1,49 +1,85 @@
-type SiteHeaderProps = {
-  active?: "home" | "about" | "services" | "capabilities" | "industries" | "contact";
+import Link from "next/link";
+import { getDictionary } from "../i18n";
+import { localePath, type Locale } from "../i18n/config";
+import { navItems, type NavKey } from "../navigation";
+import { SITE } from "../site-config";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { MobileMenu } from "./MobileMenu";
+import { ThemeToggle } from "./ThemeToggle";
+
+type Props = {
+  locale: Locale;
+  active?: NavKey;
+  /** Path without locale prefix, used by the language switcher to stay put. */
+  path?: string;
 };
 
-const navigation = [
-  { key: "home", label: "Home", href: "/" },
-  { key: "about", label: "About Us", href: "/about" },
-  { key: "services", label: "Services", href: "/services" },
-  { key: "capabilities", label: "Capabilities", href: "/capabilities" },
-  { key: "industries", label: "Industries", href: "/industries" },
-  { key: "contact", label: "Contacts", href: "/contact" },
-] as const;
+export function SiteHeader({ locale, active, path = "/" }: Props) {
+  const t = getDictionary(locale);
+  const items = navItems(t);
 
-export function SiteHeader({ active }: SiteHeaderProps) {
   return (
-    <header className="site-header">
-      <div className="topbar">
-        <div className="site-shell topbar-inner">
-          <div className="language-list" aria-label="Languages"><span>EN</span><span>PT</span><span>AO</span></div>
-          <div className="top-contact-list">
-            <a href="mailto:sales@cabtecni.com"><i aria-hidden="true">✉</i> sales@cabtecni.com</a>
-            <a href="tel:+244935625151"><i aria-hidden="true">◆</i> +244 935 62 51 51</a>
-            <a href="mailto:sales@nas-global.co.za"><i aria-hidden="true">◆</i> NAS GLOBAL support</a>
-          </div>
-          <div className="top-socials">
-            <a href="mailto:sales@cabtecni.com" aria-label="Email Cabtecni">@</a>
-            <a href="https://www.linkedin.com/company/cabtecni/" target="_blank" rel="noreferrer" aria-label="Cabtecni on LinkedIn">in</a>
+    <>
+      <a className="skip-link" href="#main-content">{t.nav.skipToContent}</a>
+      <header className="site-header">
+        <div className="topbar">
+          <div className="site-shell topbar-inner">
+            <div className="top-contact-list">
+              <a href={`mailto:${SITE.email}`}><i aria-hidden="true">✉</i> {SITE.email}</a>
+              <a href={`tel:${SITE.telephone}`}><i aria-hidden="true">◆</i> {SITE.telephoneDisplay}</a>
+              <a href={`mailto:${SITE.partnerEmail}`}><i aria-hidden="true">◆</i> {t.topbar.partnerSupport}</a>
+            </div>
+            <div className="top-actions">
+              <div className="top-socials">
+                <a href={`mailto:${SITE.email}`} aria-label={t.topbar.emailAria}>@</a>
+                <a href={SITE.linkedin} target="_blank" rel="noreferrer" aria-label={t.topbar.linkedinAria}>in</a>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <nav className="main-navigation" aria-label="Primary navigation">
-        <div className="site-shell navigation-inner">
-          <a className="site-logo" href="/" aria-label="Cabtecni home">
-            <img src="/images/cabtecni/cropped-Artboard-1.png" alt="Cabtecni" />
-          </a>
-          <div className="desktop-menu">
-            {navigation.map((item) => (
-              <a className={active === item.key ? "active" : undefined} href={item.href} key={item.key}>{item.label}</a>
-            ))}
+
+        <nav className="main-navigation" aria-label={t.nav.primaryNav}>
+          <div className="site-shell navigation-inner">
+            <Link className="site-logo" href={localePath(locale, "/")} aria-label={t.nav.homeAria}>
+              {/* Two files rather than a CSS filter: the colour mark has to stay
+                  exact in light mode, and the dark-mode art is a real white
+                  lockup from the client, not a recolour. */}
+              <img className="logo-light" src="/brand/logos/cabtecni-colour.png" alt="Cabtecni" width={186} height={77} />
+              <img className="logo-dark" src="/brand/logos/cabtecni-white.png" alt="Cabtecni" width={186} height={77} />
+            </Link>
+
+            <div className="desktop-menu">
+              {items.map((item) => (
+                <Link
+                  key={item.key}
+                  className={active === item.key ? "active" : undefined}
+                  aria-current={active === item.key ? "page" : undefined}
+                  href={localePath(locale, item.path)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+
+            <div className="nav-utilities">
+              <LanguageSwitcher
+                locale={locale}
+                path={path}
+                label={t.nav.languageLabel}
+                chooseLabel={t.nav.chooseLanguage}
+              />
+              <ThemeToggle label={t.nav.toggleTheme} />
+              <MobileMenu
+                locale={locale}
+                active={active}
+                items={items}
+                openLabel={t.nav.openMenu}
+                closeLabel={t.nav.closeMenu}
+              />
+            </div>
           </div>
-          <details className="mobile-menu">
-            <summary aria-label="Open navigation">☰</summary>
-            <div>{navigation.map((item) => <a href={item.href} key={item.key}>{item.label}</a>)}</div>
-          </details>
-        </div>
-      </nav>
-    </header>
+        </nav>
+      </header>
+    </>
   );
 }
