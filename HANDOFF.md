@@ -12,8 +12,8 @@ procurement and industrial services, based in Luanda). Client contact:
 - **Local path:** `/Users/almeidajose/Documents/A/App/C/Cabtecni2`
 - Separate from the plain HTML/CSS/JS build in `../cabtecni` (that one has its
   own `HANDOFF.md`). Do not confuse the two.
-- Nothing is committed yet: the whole session's work is uncommitted in the
-  working tree. `git status` is large and that is expected.
+- **Committed locally as of 2026-08-09** (`7e6e6b7`), but **not pushed** — see
+  "Deployment" below, this is the most urgent open item.
 
 ## Stack
 
@@ -102,6 +102,18 @@ the other three, so a missing key is a **build error**, not a blank string.
 6. **The NAS GLOBAL partner logo sits on a white plate** in the footer. Its navy
    wordmark measures 1.98:1 on the near-black footer. António explicitly wants
    his partner's original colour artwork, so the plate is how both are honoured.
+
+7. **Scroll-driven CSS animations (`animation-timeline: view()`) cannot be
+   verified in the preview pane either**, and not for the same reason as #4.
+   `getAnimations()` reports the timeline as attached and correct, but its
+   `playState` reads `finished` at scroll positions that are nowhere near the
+   end of the element's range, and `requestAnimationFrame` loops used to give
+   the compositor time to recompute simply hang. The CSS itself — selectors,
+   nesting, `@supports`/`prefers-reduced-motion` gating, keyframe values — is
+   fully verifiable via `document.styleSheets` and `getComputedStyle`, and was
+   verified that way for the parallax effects below. Whether they actually
+   move on scroll was **not** watched by Claude in this pane; that needs a
+   human, on a real scroll gesture, in a real browser.
 
 ## Images (kie.ai)
 
@@ -229,6 +241,71 @@ industrial subject is effectively reverted.
 Wired like the interior heroes: `HeroCarousel` sets `--slide-image` and optional
 `--slide-image-mobile`, and the 560px block swaps them.
 
+## Home page restructure + scroll parallax (2026-08-09)
+
+António's brief was that the site needed to feel more industry-focused with
+stronger visuals; the follow-up complaint was that the home page still felt
+monotonous on a phone despite already carrying 17 image surfaces. The
+diagnosis was never image count — it was a page that ran ~20 screens with four
+stretches over a full screen of nothing but stacked text cards, all in the same
+kicker → heading → green rule → card rhythm.
+
+Three changes, in order of effect:
+
+1. **Home service list cut from 8 to 4.** It duplicated `/services` entirely.
+   The projects grid immediately below was *also* showing the first four
+   services again under the heading "Our service portfolio" — so the page
+   would have shown the same four services twice had the list simply been
+   truncated. Projects now shows services 05-08 instead, so all eight still
+   appear, none twice. `HOME_SERVICE_COUNT` in `HomeView.tsx` is the single
+   place that number lives; the tail-end assertion in
+   `tests/rendered-html.test.mjs` was widened from a literal `serviceData.map`
+   match to tolerate an intervening `.slice(...)` — the intent (home still
+   renders from the dictionary, not hardcoded copy) is unchanged.
+2. **The process section became a full-bleed photographic band**
+   (`.process-band`, `industry-petrochemical.webp` behind a scrim), the one
+   section that deliberately breaks the card-stack rhythm rather than adding
+   another one. Every colour token in it comes from the fixed ink/on-dark set
+   per gotcha #2 — checked in both themes, not just light.
+3. **The industries and contact strips went full-bleed** (`margin-inline:
+   -16px` off a shell that's already `100% - 32px`, not a `100vw` rule — that
+   would have reopened a horizontal scrollbar) and grew from 176px to 300px.
+
+Scroll parallax followed as a fourth pass, on `.process-band` and the two
+full-bleed strips only. Deliberately not everywhere: `.trust-slide` already
+tried sitewide parallax (`background-attachment: fixed`) and disabled it on
+mobile (line ~945, `background-attachment: scroll`) because fixed attachment
+janks on iOS Safari — reusing that technique broadly would repeat a decision
+already reversed. And a 15,000px page with motion on every transition stops
+reading as deliberate and starts reading as a template. Three bands beat
+seventeen.
+
+Technique is `animation-timeline: view()` — scroll position drives the
+keyframe directly, on the compositor, no JS scroll listener (there's already
+one in `SiteChrome.tsx` for the header progress bar; a second per-frame
+handler is exactly the kind of thing that janks on the mid-range Android
+hardware this audience actually uses). Every instance is wrapped in
+`@supports (animation-timeline: view())` so it is simply absent, not broken,
+in Firefox — and separately in `@media (prefers-reduced-motion: no-preference)`.
+That second guard is NOT redundant with the `animation-duration: .01ms`
+!important rule near the bottom of `globals.css`: that rule neutralises
+TIME-based animations, but a view()-timeline's progress is driven by scroll
+position, not the clock, so forcing its duration near zero does not stop it
+moving. See gotcha #7 for why none of this could be watched actually animate
+from this tooling, only verified structurally correct.
+
+**The capability image (`.capability-image`) deliberately did NOT get
+parallax**, despite being a fourth strong candidate. It already has a hover
+zoom (`transform: scale(1.06)` on `::before`, added earlier this session) and
+a `view()`-driven animation on the same `transform` property would silently
+win the cascade over that hover state every time the 640px-tall band is on
+screen, i.e. always. Composing both cleanly needs a `@property`-registered
+custom property so the hover easing survives independently of the per-frame
+scroll value — a real technique, but not one to ship unverified when hover
+*also* cannot be triggered in this pane (see the capability-image comment in
+`globals.css` and the earlier hover-effect entry in this file). Someone who
+can actually watch it move should add it.
+
 ## Chatbot
 
 Floating widget on every page, all four languages. `app/api/chat/route.ts`
@@ -275,10 +352,18 @@ Portuguese, an English translation, and extracted action points).
 4. Images still use `<img>` rather than `next/image` (the 10 remaining lint
    warnings). `next/image` on Cloudflare Workers needs a custom loader, which
    is a deployment decision.
-5. Nothing is committed. Consider a commit before further large changes.
-   **Note:** production now runs code that exists only in this working tree.
-   `origin/main` is still at `85d91c3`, so a fresh clone does not reproduce the
-   live site. This is the most urgent item.
+5. ~~Nothing is committed.~~ Committed locally 2026-08-09 as `7e6e6b7`, but the
+   **push failed** — see "Deployment" below. `origin/main` is still at
+   `85d91c3`, so a fresh clone does not reproduce the live site. This remains
+   the most urgent item until someone with push access runs it.
+6. **The 16px horizontal-overflow bug is still open.** Every page can be
+   scrolled sideways slightly at phone widths; it's `.top-actions`/
+   `.top-socials` in the header (confirmed on `/capabilities`, which shares
+   none of the other markup touched this session), not anything from the
+   mobile-image or parallax work. Queued as a background task, not yet done.
+7. **Parallax exists on three bands but has not been watched moving by
+   anyone.** See "Home page restructure + scroll parallax" above and gotcha
+   #7. Worth five minutes on a real phone before calling it finished.
 
 ## Deployment
 
@@ -297,6 +382,24 @@ Do not confuse this with the separate **`cabtecni`** Vercel project
 (`cabtecni.vercel.app`), which is the plain HTML build. The two repos have
 crossed names: this project pushes to `Almeida2019/cabtecni.git`, while
 `../cabtecni` pushes to `Almeida2019/cabtecni2.git`.
+
+**`git push origin main` fails as of 2026-08-09**:
+`Permission to Almeida2019/cabtecni.git denied to Leornadia.` The SSH key
+active on this machine authenticates as `Leornadia`, which has no write access
+to `Almeida2019/cabtecni` — deploys have been going out via `vercel --prod`
+regardless, since that uploads the working tree directly and never touches
+git. Fix by either adding that key to the `Almeida2019` account, or by
+repointing the remote (`git remote set-url origin <url the key can write
+to>`) — check which before doing it, since the crossed-names issue above means
+the obvious-looking alternate remote may be the wrong project.
+
+**`Almeida2019/cabtecni` is a PUBLIC repository.** Confirmed via an
+unauthenticated GitHub API read (200, no auth needed). `Latest_from_Antonio/`
+is gitignored specifically because of this — it holds voice recordings of a
+named individual, and git history is not realistically purgeable once pushed.
+Do not remove that gitignore entry without first making the repo private, and
+know that flipping visibility later does not retroactively protect anything
+that was public before the flip (clones/forks/crawlers may already have it).
 
 Last production deploy: **2026-08-07**, `dpl_Cw4pmscZ71tHSySXtPyqa3FyyDyK`.
 

@@ -345,6 +345,34 @@ a { color: inherit; text-decoration: none; transition: color .22s ease, backgrou
 .process-band .process-timeline li > strong { background: var(--on-dark-fill); color: var(--on-dark); }
 .process-band .process-timeline h3 { color: var(--on-dark); }
 .process-band .process-timeline p { color: var(--on-dark-muted); }
+/*
+ * Parallax. The photo drifts through ~40 points of its own height as the
+ * section crosses the viewport, so it reads as moving slower than the copy in
+ * front of it. Scroll-driven via animation-timeline: view() rather than a
+ * scroll listener: it runs on the compositor, costs nothing off-screen, and
+ * avoids a second per-frame handler fighting the one SiteChrome.tsx already
+ * has for the top progress bar — the kind of thing that shows up as jank on
+ * the mid-range Android hardware this site's actual visitors use.
+ *
+ * Gated on prefers-reduced-motion explicitly rather than trusting the
+ * `animation-duration: .01ms` rule further down this file: that rule
+ * neutralises TIME-based animations, but a view()-timeline's progress is
+ * driven by scroll position, not the clock, so forcing its duration near
+ * zero would not stop it moving. It needs its own guard.
+ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .process-band {
+      animation: process-band-parallax linear;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+    @keyframes process-band-parallax {
+      from { background-position: center 30%; }
+      to   { background-position: center 70%; }
+    }
+  }
+}
 .process-timeline { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 66px; list-style: none; margin: 0; padding: 0; }
 .process-timeline::before { content: ""; position: absolute; left: 14%; right: 14%; top: 54px; height: 1px; background: var(--line-strong); }
 .process-timeline li { position: relative; z-index: 2; text-align: center; }
@@ -417,6 +445,19 @@ a { color: inherit; text-decoration: none; transition: color .22s ease, backgrou
 @media (hover: hover) {
   .capability-image:hover::before { transform: scale(1.06); filter: saturate(1) contrast(1.05); }
 }
+/*
+ * Deliberately NOT given the scroll parallax that .process-band and the two
+ * full-bleed strips have. That effect drives `transform` continuously from a
+ * view()-timeline, and a running animation always wins the cascade for the
+ * property it animates — it would silently swallow the hover scale above
+ * every time this band is on screen, i.e. always, since it is 640px tall.
+ * Composing the two cleanly needs registering a custom property with
+ * `@property` so the hover state can keep easing independently of the
+ * per-frame scroll value, which is a real technique but not one to add
+ * unverified: hover and scroll motion both fail to register in this
+ * project's preview tooling (document.hidden stays true there), so nobody
+ * has actually watched this combination move. Add it once someone can.
+ */
 .capability-copy { min-height: 640px; display: flex; flex-direction: column; justify-content: center; padding: 92px max(58px, calc((100vw - var(--shell)) / 2)) 88px 64px; color: var(--on-dark-muted); }
 .capability-copy > p:first-child { margin: 0 0 24px; }
 .capability-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 48px; }
@@ -934,6 +975,27 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 99; opacity: .02;
   .contact-grid .mobile-section-visual { height: 300px; margin-inline: -16px; border-radius: 0; box-shadow: none; }
   .industry-section .mobile-section-visual { margin-block: 26px 34px; }
   .contact-grid .mobile-section-visual { margin-block: 4px 0; }
+  /*
+   * Parallax on the two full-bleed strips, same view()-timeline technique and
+   * same reduced-motion reasoning as .process-band above. Scale stays fixed
+   * across both keyframes (only translateY moves) purely so the container's
+   * existing overflow: hidden always has image to clip against instead of
+   * showing an edge.
+   */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .industry-section .mobile-section-visual img,
+      .contact-grid .mobile-section-visual img {
+        animation: strip-parallax linear;
+        animation-timeline: view();
+        animation-range: cover 0% cover 100%;
+      }
+      @keyframes strip-parallax {
+        from { transform: scale(1.12) translateY(-5%); }
+        to   { transform: scale(1.12) translateY(5%); }
+      }
+    }
+  }
   .process-timeline { gap: 50px; }
   .process-timeline::before, .process-timeline li > i { display: none; }
   .process-timeline li > strong { margin-top: 18px; }
