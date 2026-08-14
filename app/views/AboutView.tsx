@@ -20,8 +20,8 @@ export function AboutView({ locale }: { locale: Locale }) {
           eyebrow={t.about.heroKicker}
           title={t.about.heroTitle}
           description={t.about.heroDescription}
-          image="/images/cabtecni/about-hero-branded-v2.webp"
-          mobileImage="/images/cabtecni/about-hero-mobile-branded-v2.webp"
+          image="/images/cabtecni/about-hero-user-supplied.webp"
+          mobileImage="/images/cabtecni/about-hero-user-supplied.webp"
         />
 
         <ProofBand locale={locale} />
