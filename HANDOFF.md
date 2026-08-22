@@ -115,6 +115,30 @@ the other three, so a missing key is a **build error**, not a blank string.
    move on scroll was **not** watched by Claude in this pane; that needs a
    human, on a real scroll gesture, in a real browser.
 
+8. **`resolveOrigin()` is PINNED in production** (`app/site-config.ts`). It
+   returns `SITE.fallbackOrigin` whenever `VERCEL_ENV === "production"`, and
+   only falls back to the request host on previews and locally. This is what
+   stops the three production hostnames (`cabtecni.com`, `www.cabtecni.com`,
+   `cabtecni-industrial.vercel.app`) from each self-canonicalising into three
+   indexable copies of the site. Do not "simplify" it back to always using the
+   request host.
+
+9. **`<html lang>` comes from middleware, not from the locale layout.** The
+   root layout renders the only `<html>` and gets no params, so `middleware.ts`
+   forwards the pathname as `x-pathname` and the layout derives `lang` from it.
+   An earlier version patched it client-side, which left the server HTML —
+   what crawlers read — declaring `/pt`, `/es` and `/fr` as English. If
+   middleware is ever removed, `lang` silently reverts to `en` everywhere.
+
+10. **`title.absolute` and `title.template` must BOTH stay in
+    `app/[locale]/layout.tsx`.** `absolute` stops the root template
+    double-branding the localised home pages ("Cabtecni | Soluções ... |
+    Cabtecni"). But declaring `absolute` alone also clears the inherited
+    template for CHILD routes, which silently dropped the suffix from "Sobre
+    Nós | Cabtecni". Both keys together is correct; removing either one breaks
+    a different set of pages, and neither breakage is obvious without checking
+    a locale home AND a locale child page.
+
 ## Images (kie.ai)
 
 `scripts/kie/generate.mjs` — presets in `MODEL_PRESETS`. **19.2 credits left**
