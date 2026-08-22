@@ -25,13 +25,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   return {
     metadataBase: new URL(origin),
-    // `absolute`, not `default`: the root layout declares `template: "%s |
-    // Cabtecni"`, and a nested `default` is treated as a title the parent
-    // template applies to — which rendered "Cabtecni | Soluções ... | Cabtecni"
-    // on /pt, /es and /fr. Child routes are unaffected either way; they set
-    // their own titles and still inherit the root template ("Sobre Nós |
-    // Cabtecni").
-    title: { absolute: t.meta.siteTitle },
+    // `absolute` stops the root layout's `template: "%s | Cabtecni"` applying
+    // to this segment's own title, which had rendered "Cabtecni | Soluções ...
+    // | Cabtecni" on /pt, /es and /fr. `template` must be repeated alongside
+    // it: declaring `absolute` alone also clears the inherited template for
+    // CHILD routes, which silently dropped the suffix from "Sobre Nós |
+    // Cabtecni". Both keys together is the documented combination.
+    title: { absolute: t.meta.siteTitle, template: `%s | ${SITE.shortName}` },
     description: t.meta.siteDescription,
     alternates: {
       canonical: `${origin}${localePath(locale, "/")}`,
