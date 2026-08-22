@@ -25,7 +25,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   return {
     metadataBase: new URL(origin),
-    title: { default: t.meta.siteTitle, template: `%s | ${SITE.shortName}` },
+    // `absolute`, not `default`: the root layout declares `template: "%s |
+    // Cabtecni"`, and a nested `default` is treated as a title the parent
+    // template applies to — which rendered "Cabtecni | Soluções ... | Cabtecni"
+    // on /pt, /es and /fr. Child routes are unaffected either way; they set
+    // their own titles and still inherit the root template ("Sobre Nós |
+    // Cabtecni").
+    title: { absolute: t.meta.siteTitle },
     description: t.meta.siteDescription,
     alternates: {
       canonical: `${origin}${localePath(locale, "/")}`,
@@ -38,7 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       locale: LOCALE_META[locale].htmlLang,
       title: t.meta.siteTitle,
       description: t.meta.ogDescription,
-      images: [{ url: `${origin}/og.png`, width: 1693, height: 929, alt: `${SITE.shortName} ${SITE.tagline}` }],
+      images: [{ url: `${origin}/og.jpg`, width: 1200, height: 630, alt: `${SITE.shortName} ${SITE.tagline}` }],
     },
   };
 }
@@ -48,16 +54,8 @@ export default async function LocaleLayout({ children, params }: Props) {
   // `/en` would duplicate the root English pages, so it is not a valid route.
   if (!isLocale(raw) || raw === DEFAULT_LOCALE) notFound();
 
-  return (
-    <>
-      {/* The root layout hardcodes lang="en" because it cannot know the
-          locale; correct it here so assistive tech announces the right one. */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `document.documentElement.lang=${JSON.stringify(LOCALE_META[raw as Locale].htmlLang)};`,
-        }}
-      />
-      {children}
-    </>
-  );
+  // `<html lang>` is set server-side in the root layout from the pathname that
+  // middleware.ts forwards, so the client-side correction that used to live
+  // here is gone — it only ever fixed the DOM after hydration.
+  return <>{children}</>;
 }

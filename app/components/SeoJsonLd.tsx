@@ -20,7 +20,7 @@ export async function SeoJsonLd({ locale }: { locale: Locale }) {
     alternateName: SITE.shortName,
     url: `${origin}${localePath(locale, "/")}`,
     logo: `${origin}/brand/logos/cabtecni-colour.png`,
-    image: `${origin}/og.png`,
+    image: `${origin}/og.jpg`,
     description: t.meta.siteDescription,
     email: SITE.email,
     telephone: SITE.telephone,

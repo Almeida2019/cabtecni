@@ -142,7 +142,7 @@ test("keeps the captured business content and key assets", async () => {
     readFile(new URL("../content/scrape/cabtecni-inventory.md", import.meta.url), "utf8"),
     readFile(new URL("../app/views/HomeView.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
-    access(new URL("../public/og.png", import.meta.url)),
+    access(new URL("../public/og.jpg", import.meta.url)),
     access(new URL("../public/brand/logos/cabtecni-colour.png", import.meta.url)),
     access(new URL("../public/brand/logos/cabtecni-white.png", import.meta.url)),
     access(new URL("../public/brand/logos/nas-global-white.png", import.meta.url)),

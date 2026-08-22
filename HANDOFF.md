@@ -368,8 +368,19 @@ Portuguese, an English translation, and extracted action points).
 ## Deployment
 
 Vercel project **`cabtecni-industrial`** (`.vercel/project.json`), production
-alias <https://cabtecni-industrial.vercel.app>. Deployed with `vercel --prod`,
-which uploads the working tree directly and does **not** involve git.
+alias <https://cabtecni-industrial.vercel.app>.
+
+**Two independent ways production gets updated, and both are live:**
+`vercel --prod` uploads the working tree directly and does not involve git.
+Separately, **the project has GitHub auto-deploy configured** — confirmed
+2026-08-09 when a `git push origin main` alone produced a new production
+deployment with no `vercel --prod` run, evidenced by the
+`cabtecni-industrial-git-main-almeidayalamo.vercel.app` alias that only
+git-triggered deploys get. Discovered by accident; it had not been mentioned
+anywhere before this. **Practical effect: once push access works, `git push
+origin main` ships to production by itself.** A local commit that hasn't been
+pushed is not on production; a push, even without an explicit deploy step,
+is.
 
 `vercel.json` pins `npx next build`, not the vinext build `npm run build` uses,
 so validate with `npx next build` before deploying.

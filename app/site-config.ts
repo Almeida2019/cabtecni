@@ -19,10 +19,22 @@ export const SITE = {
 } as const;
 
 /**
- * Resolves the origin the current request arrived on, so canonical URLs, the
- * sitemap and OG images are correct on preview deploys as well as production.
+ * Resolves the origin used for canonical URLs, hreflang, the sitemap, robots
+ * and the JSON-LD graph.
+ *
+ * In PRODUCTION this is pinned to the real domain rather than the request host.
+ * The app answers on three hostnames — cabtecni.com, www.cabtecni.com and the
+ * cabtecni-industrial.vercel.app alias — and deriving the origin per request
+ * made each one declare itself canonical, i.e. three indexable copies of the
+ * same site competing with each other. Pinning it means the vercel.app and www
+ * copies both point search engines at the one real domain.
+ *
+ * Preview deploys keep the request-derived origin, so their canonicals and OG
+ * images still resolve against the deployment being previewed.
  */
 export async function resolveOrigin() {
+  if (process.env.VERCEL_ENV === "production") return SITE.fallbackOrigin;
+
   const requestHeaders = await headers();
   const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
   if (!host) return SITE.fallbackOrigin;
